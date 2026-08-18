@@ -28,9 +28,14 @@ class WC_WhatsApp_Frontend {
 		$product_url = get_permalink( $product->get_id() );
 		$whatsapp_url = $this->build_whatsapp_link( sprintf( __( 'Hi! I am interested in %s (%s)', 'wc-whatsapp-suite' ), $product_name, $product_url ) );
 
+		echo '<div class="wcws-add-to-cart-section">';
+		echo '<h3>' . esc_html__( 'Add to cart', 'wc-whatsapp-suite' ) . '</h3>';
 		echo '<a href="' . esc_url( $whatsapp_url ) . '" class="button wcws-whatsapp-button" target="_blank" rel="noopener noreferrer">';
-		echo '<span class="wcws-whatsapp-icon"></span> ' . esc_html( $button_text );
+		echo '<span class="wcws-whatsapp-icon">';
+		echo '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+		echo '</span> ' . esc_html( $button_text );
 		echo '</a>';
+		echo '</div>';
 	}
 
 	public function render_catalog_shortcode( $atts ) {
@@ -64,18 +69,24 @@ class WC_WhatsApp_Frontend {
 
 		ob_start();
 		?>
+		<h2 class="wcws-catalog-title"><?php esc_html_e( 'Catalog', 'wc-whatsapp-suite' ); ?></h2>
 		<ul class="wcws-catalog products columns-<?php echo esc_attr( $columns ); ?>">
 			<?php foreach ( $products as $product ) : ?>
 				<li class="wcws-catalog-item product">
 					<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>" class="woocommerce-LoopProduct-link">
-						<?php echo $product->get_image(); ?>
+						<?php echo $product->get_image( 'medium' ); ?>
 						<h2 class="woocommerce-loop-product__title"><?php echo esc_html( $product->get_name() ); ?></h2>
 						<span class="price"><?php echo $product->get_price_html(); ?></span>
 					</a>
 					<?php
 					$whatsapp_url = $this->build_whatsapp_link( sprintf( __( 'Hi! I am interested in %s (%s)', 'wc-whatsapp-suite' ), $product->get_name(), get_permalink( $product->get_id() ) ) );
 					?>
-					<a href="<?php echo esc_url( $whatsapp_url ); ?>" class="button wcws-whatsapp-button" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $button_text ); ?></a>
+					<a href="<?php echo esc_url( $whatsapp_url ); ?>" class="button wcws-whatsapp-button" target="_blank" rel="noopener noreferrer">
+						<span class="wcws-whatsapp-icon">
+							<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+						</span>
+						<?php echo esc_html( $button_text ); ?>
+					</a>
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -95,7 +106,9 @@ class WC_WhatsApp_Frontend {
 		}
 		$message = __( 'Hi! I have a question.', 'wc-whatsapp-suite' );
 		$url = 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $default_number ) . '?text=' . rawurlencode( $message );
-		echo '<a href="' . esc_url( $url ) . '" class="wcws-floating-button" target="_blank" rel="noopener noreferrer"><span class="dashicons dashicons-whatsapp"></span></a>';
+		echo '<a href="' . esc_url( $url ) . '" class="wcws-floating-button" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Chat on WhatsApp', 'wc-whatsapp-suite' ) . '">';
+		echo '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+		echo '</a>';
 	}
 
 	private function build_whatsapp_link( $message ) {

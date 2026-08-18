@@ -122,7 +122,7 @@ class WC_WhatsApp_Admin {
 				<tr>
 					<th scope="row"><?php esc_html_e( 'Floating Button', 'wc-whatsapp-suite' ); ?></th>
 					<td>
-						<label><input type="radio" name="wcws_settings_general[floating_enabled]" value="yes" <?php checked( $floating_enabled, 'yes' ); ?>> <?php esc_html_e( 'Enable', 'wc-whatsapp-suite' ); ?></label><br>
+						<label><input type="radio" name="wcws_settings_general[floating_enabled]" value="yes" <?php checked( $floating_enabled, 'yes' ); ?>> <?php esc_html_e( 'Enable', 'wc-whatsapp-suite' ); ?></label>
 						<label><input type="radio" name="wcws_settings_general[floating_enabled]" value="no" <?php checked( $floating_enabled, 'no' ); ?>> <?php esc_html_e( 'Disable', 'wc-whatsapp-suite' ); ?></label>
 					</td>
 				</tr>
@@ -134,7 +134,7 @@ class WC_WhatsApp_Admin {
 					</td>
 				</tr>
 			</table>
-			<?php submit_button(); ?>
+			<button type="submit" class="submit-button"><?php esc_html_e( 'Save Changes', 'wc-whatsapp-suite' ); ?></button>
 		</form>
 		<?php
 	}
@@ -163,7 +163,7 @@ class WC_WhatsApp_Admin {
 					</tr>
 				<?php endforeach; ?>
 			</table>
-			<?php submit_button(); ?>
+			<button type="submit" class="submit-button"><?php esc_html_e( 'Save Changes', 'wc-whatsapp-suite' ); ?></button>
 		</form>
 		<?php
 	}
@@ -188,7 +188,7 @@ class WC_WhatsApp_Admin {
 					<td><input type="number" id="wcws_delay" name="wcws_settings_abandoned[delay_minutes]" value="<?php echo esc_attr( $delay ); ?>" min="5" step="1" class="small-text" /></td>
 				</tr>
 			</table>
-			<?php submit_button(); ?>
+			<button type="submit" class="submit-button"><?php esc_html_e( 'Save Changes', 'wc-whatsapp-suite' ); ?></button>
 		</form>
 		<?php
 	}
@@ -203,16 +203,18 @@ class WC_WhatsApp_Admin {
 				<tr>
 					<th scope="row"><?php esc_html_e( 'Send notifications for these statuses', 'wc-whatsapp-suite' ); ?></th>
 					<td>
-						<?php foreach ( $statuses as $status => $label ) : $clean_status = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status; ?>
-							<label style="display:block; margin-bottom:5px;">
-								<input type="checkbox" name="wcws_settings_notifications[statuses][]" value="<?php echo esc_attr( $clean_status ); ?>" <?php checked( isset( $notifications['statuses'] ) && in_array( $clean_status, $notifications['statuses'] ) ); ?> />
-								<?php echo esc_html( $label ); ?>
-							</label>
-						<?php endforeach; ?>
+						<div class="wcws-checkbox-list">
+							<?php foreach ( $statuses as $status => $label ) : $clean_status = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status; ?>
+								<label>
+									<input type="checkbox" name="wcws_settings_notifications[statuses][]" value="<?php echo esc_attr( $clean_status ); ?>" <?php checked( isset( $notifications['statuses'] ) && in_array( $clean_status, $notifications['statuses'] ) ); ?> />
+									<?php echo esc_html( $label ); ?>
+								</label>
+							<?php endforeach; ?>
+						</div>
 					</td>
 				</tr>
 			</table>
-			<?php submit_button(); ?>
+			<button type="submit" class="submit-button"><?php esc_html_e( 'Save Changes', 'wc-whatsapp-suite' ); ?></button>
 		</form>
 		<?php
 	}
@@ -240,7 +242,7 @@ class WC_WhatsApp_Admin {
 					</td>
 				</tr>
 			</table>
-			<?php submit_button(); ?>
+			<button type="submit" class="submit-button"><?php esc_html_e( 'Save Changes', 'wc-whatsapp-suite' ); ?></button>
 		</form>
 		<?php
 	}
@@ -268,7 +270,7 @@ class WC_WhatsApp_Admin {
 							<td><?php echo esc_html( $log->phone ); ?></td>
 							<td><?php echo esc_html( wp_trim_words( $log->message, 20 ) ); ?></td>
 							<td><?php echo esc_html( $log->direction ); ?></td>
-							<td><?php echo esc_html( $log->status ); ?></td>
+							<td><span class="status-<?php echo esc_attr( $log->status ); ?>"><?php echo esc_html( $log->status ); ?></span></td>
 							<td><?php echo esc_html( $log->created_at ); ?></td>
 						</tr>
 					<?php endforeach; ?>
