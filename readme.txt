@@ -24,7 +24,7 @@ Chat Commerce Suite integrates your WooCommerce store with the WhatsApp Business
 
 1. Upload the `chat-commerce-suite` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to WooCommerce > WhatsApp Suite and enter your WhatsApp Business Cloud API credentials.
+3. Go to WooCommerce > Chat Commerce and enter your WhatsApp Business Cloud API credentials.
 4. Configure the webhook URL in your Meta Business app.
 
 == Frequently Asked Questions ==

@@ -14,8 +14,8 @@ class Chat_Commerce_Admin {
 	public function add_admin_menu() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'WhatsApp Suite', 'chat-commerce-suite' ),
-			__( 'WhatsApp Suite', 'chat-commerce-suite' ),
+			__( 'Chat Commerce', 'chat-commerce-suite' ),
+			__( 'Chat Commerce', 'chat-commerce-suite' ),
 			'manage_woocommerce',
 			'chat-commerce-suite',
 			array( $this, 'render_settings_page' )

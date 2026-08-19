@@ -12,7 +12,7 @@ Turn any WooCommerce store into a WhatsApp sales channel. Adds a product catalog
 - **Order status notifications** sent to customers on hold, processing, completed, and cancelled — fully customizable templates.
 - **Two-way webhook** that logs incoming messages and replies to simple commands (`status`, `products`, `contact`).
 - **Message log** in the admin area so you can see exactly what was sent and received.
-- Clean settings screen under **WooCommerce → WhatsApp Suite**.
+- Clean settings screen under **WooCommerce → Chat Commerce**.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ Turn any WooCommerce store into a WhatsApp sales channel. Adds a product catalog
 
 1. Download or clone this repository into `wp-content/plugins/chat-commerce-suite`.
 2. Activate **Chat Commerce Suite** from the WordPress Plugins screen.
-3. Go to **WooCommerce → WhatsApp Suite** and enter your Phone Number ID, access token, and a verify token of your choice.
+3. Go to **WooCommerce → Chat Commerce** and enter your Phone Number ID, access token, and a verify token of your choice.
 4. In your Meta app, set the webhook Callback URL to:
    ```
    https://yourdomain.com/wp-json/chat-commerce-suite/v1/webhook
