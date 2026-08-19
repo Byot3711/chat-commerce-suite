@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WC_WhatsApp_Suite {
+class WhatsApp_Commerce_Suite {
 
 	protected static $instance = null;
 
@@ -20,36 +20,36 @@ class WC_WhatsApp_Suite {
 	}
 
 	private function includes() {
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-api.php';
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-admin.php';
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-webhook.php';
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-abandoned-cart.php';
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-notifications.php';
-		require_once WCWS_PLUGIN_DIR . 'includes/class-wc-whatsapp-frontend.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-api.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-admin.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-webhook.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-abandoned-cart.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-notifications.php';
+		require_once WACS_PLUGIN_DIR . 'includes/class-whatsapp-commerce-frontend.php';
 	}
 
 	private function init_hooks() {
-		register_activation_hook( WCWS_PLUGIN_FILE, array( $this, 'activate' ) );
-		register_deactivation_hook( WCWS_PLUGIN_FILE, array( $this, 'deactivate' ) );
+		register_activation_hook( WACS_PLUGIN_FILE, array( $this, 'activate' ) );
+		register_deactivation_hook( WACS_PLUGIN_FILE, array( $this, 'deactivate' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 	}
 
 	public function activate() {
 		$this->create_tables();
-		update_option( 'wcws_version', WCWS_VERSION );
+		update_option( 'wacs_version', WACS_VERSION );
 	}
 
 	public function deactivate() {}
 
 	public function load_textdomain() {
-		load_plugin_textdomain( 'wc-whatsapp-suite', false, dirname( WCWS_PLUGIN_BASENAME ) . '/languages' );
+		load_plugin_textdomain( 'whatsapp-commerce-suite', false, dirname( WACS_PLUGIN_BASENAME ) . '/languages' );
 	}
 
 	private function create_tables() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql_logs = "CREATE TABLE {$wpdb->prefix}wc_whatsapp_logs (
+		$sql_logs = "CREATE TABLE {$wpdb->prefix}wacs_logs (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			phone varchar(20) NOT NULL,
 			message text NOT NULL,
@@ -59,7 +59,7 @@ class WC_WhatsApp_Suite {
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-		$sql_carts = "CREATE TABLE {$wpdb->prefix}wc_whatsapp_carts (
+		$sql_carts = "CREATE TABLE {$wpdb->prefix}wacs_carts (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			cart_key varchar(64) NOT NULL,
 			phone varchar(20) DEFAULT NULL,

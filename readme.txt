@@ -1,4 +1,4 @@
-=== WC WhatsApp Commerce Suite ===
+=== WhatsApp Commerce Suite ===
 Contributors: byot
 Tags: whatsapp, woocommerce, chat, order notifications, abandoned cart
 Requires at least: 5.0
@@ -11,7 +11,7 @@ Turn your WooCommerce store into a WhatsApp sales channel with catalog, cart, ab
 
 == Description ==
 
-WC WhatsApp Commerce Suite integrates your WooCommerce store with the WhatsApp Business Cloud API. It adds:
+WhatsApp Commerce Suite integrates your WooCommerce store with the WhatsApp Business Cloud API. It adds:
 
 * WhatsApp order button on product pages.
 * Shortcode for a product catalog with WhatsApp ordering.
@@ -22,7 +22,7 @@ WC WhatsApp Commerce Suite integrates your WooCommerce store with the WhatsApp B
 
 == Installation ==
 
-1. Upload the `wc-whatsapp-suite` folder to the `/wp-content/plugins/` directory.
+1. Upload the `whatsapp-commerce-suite` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to WooCommerce > WhatsApp Suite and enter your WhatsApp Business Cloud API credentials.
 4. Configure the webhook URL in your Meta Business app.
@@ -35,7 +35,7 @@ Create a Meta Business app, add the WhatsApp product, and obtain a Phone Number 
 
 = How do I set up the webhook? =
 
-In your Meta app, go to WhatsApp > Configuration, set the Callback URL to `https://yoursite.com/wp-json/wc-whatsapp-suite/v1/webhook` and the Verify Token to the value you set in the plugin settings.
+In your Meta app, go to WhatsApp > Configuration, set the Callback URL to `https://yoursite.com/wp-json/whatsapp-commerce-suite/v1/webhook` and the Verify Token to the value you set in the plugin settings.
 
 == Changelog ==
 

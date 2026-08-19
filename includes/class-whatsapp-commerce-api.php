@@ -3,14 +3,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WC_WhatsApp_API {
+class WhatsApp_Commerce_API {
 
 	private $phone_number_id;
 	private $access_token;
 	private $api_version;
 
 	public function __construct() {
-		$general = get_option( 'wcws_settings_general', array() );
+		$general = get_option( 'wacs_settings_general', array() );
 		$this->phone_number_id = isset( $general['phone_number_id'] ) ? $general['phone_number_id'] : '';
 		$this->access_token    = isset( $general['access_token'] ) ? $general['access_token'] : '';
 		$this->api_version     = isset( $general['api_version'] ) ? $general['api_version'] : 'v17.0';
@@ -18,7 +18,7 @@ class WC_WhatsApp_API {
 
 	public function send_message( $to, $message ) {
 		if ( empty( $this->phone_number_id ) || empty( $this->access_token ) ) {
-			return new WP_Error( 'missing_credentials', __( 'WhatsApp API credentials are not configured.', 'wc-whatsapp-suite' ) );
+			return new WP_Error( 'missing_credentials', __( 'WhatsApp API credentials are not configured.', 'whatsapp-commerce-suite' ) );
 		}
 
 		$url = "https://graph.facebook.com/{$this->api_version}/{$this->phone_number_id}/messages";
@@ -54,13 +54,13 @@ class WC_WhatsApp_API {
 		}
 
 		$this->log_message( $to, $message, 'out', 'failed' );
-		return new WP_Error( 'api_error', isset( $data['error']['message'] ) ? $data['error']['message'] : __( 'Unknown API error.', 'wc-whatsapp-suite' ) );
+		return new WP_Error( 'api_error', isset( $data['error']['message'] ) ? $data['error']['message'] : __( 'Unknown API error.', 'whatsapp-commerce-suite' ) );
 	}
 
 	private function log_message( $phone, $message, $direction, $status ) {
 		global $wpdb;
 		$wpdb->insert(
-			$wpdb->prefix . 'wc_whatsapp_logs',
+			$wpdb->prefix . 'wacs_logs',
 			array(
 				'phone'     => $phone,
 				'message'   => $message,

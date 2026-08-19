@@ -3,14 +3,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WC_WhatsApp_Notifications {
+class WhatsApp_Commerce_Notifications {
 
 	public function __construct() {
 		add_action( 'woocommerce_order_status_changed', array( $this, 'send_order_notification' ), 10, 4 );
 	}
 
 	public function send_order_notification( $order_id, $old_status, $new_status, $order ) {
-		$settings = get_option( 'wcws_settings_notifications', array() );
+		$settings = get_option( 'wacs_settings_notifications', array() );
 		if ( empty( $settings['statuses'] ) || ! is_array( $settings['statuses'] ) ) {
 			return;
 		}
@@ -24,7 +24,7 @@ class WC_WhatsApp_Notifications {
 			return;
 		}
 
-		$templates = get_option( 'wcws_settings_templates', array() );
+		$templates = get_option( 'wacs_settings_templates', array() );
 		$template_key = 'order_' . $clean_status;
 		$template = isset( $templates[ $template_key ] ) ? $templates[ $template_key ] : '';
 
@@ -40,7 +40,7 @@ class WC_WhatsApp_Notifications {
 		);
 		$message = str_replace( array_keys( $replacements ), array_values( $replacements ), $template );
 
-		$api = new WC_WhatsApp_API();
+		$api = new WhatsApp_Commerce_API();
 		$api->send_message( $phone, $message );
 	}
 }
