@@ -1,3 +1,3 @@
 jQuery(document).ready(function($) {
-    console.log('WhatsApp Commerce Suite Admin loaded');
+    console.log('Chat Commerce Suite Admin loaded');
 });

@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WhatsApp_Commerce_Abandoned_Cart {
+class Chat_Commerce_Abandoned_Cart {
 
 	public function __construct() {
 		add_action( 'woocommerce_cart_updated', array( $this, 'track_cart' ) );
@@ -32,7 +32,7 @@ class WhatsApp_Commerce_Abandoned_Cart {
 		$phone = $this->get_customer_phone();
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'wacs_carts';
+		$table = $wpdb->prefix . 'ccs_carts';
 
 		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $table WHERE cart_key = %s", $cart_key ) );
 		if ( $existing ) {
@@ -63,11 +63,11 @@ class WhatsApp_Commerce_Abandoned_Cart {
 	}
 
 	public function track_cart_on_login( $user_login, $user ) {
-		$cart_key = get_user_meta( $user->ID, '_wacs_cart_key', true );
+		$cart_key = get_user_meta( $user->ID, '_ccs_cart_key', true );
 		if ( $cart_key ) {
 			global $wpdb;
 			$wpdb->update(
-				$wpdb->prefix . 'wacs_carts',
+				$wpdb->prefix . 'ccs_carts',
 				array( 'phone' => get_user_meta( $user->ID, 'billing_phone', true ) ),
 				array( 'cart_key' => $cart_key ),
 				array( '%s' ),
@@ -77,7 +77,7 @@ class WhatsApp_Commerce_Abandoned_Cart {
 	}
 
 	public function maybe_send_abandoned_cart_messages() {
-		$settings = get_option( 'wacs_settings_abandoned', array() );
+		$settings = get_option( 'ccs_settings_abandoned', array() );
 		if ( ! isset( $settings['enabled'] ) || 'yes' !== $settings['enabled'] ) {
 			return;
 		}
@@ -87,7 +87,7 @@ class WhatsApp_Commerce_Abandoned_Cart {
 
 		global $wpdb;
 		$carts = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wacs_carts WHERE status = 'pending' AND updated_at < %s ORDER BY updated_at ASC LIMIT 10",
+			"SELECT * FROM {$wpdb->prefix}ccs_carts WHERE status = 'pending' AND updated_at < %s ORDER BY updated_at ASC LIMIT 10",
 			$cutoff
 		) );
 
@@ -104,8 +104,8 @@ class WhatsApp_Commerce_Abandoned_Cart {
 
 			$cart_link = wc_get_cart_url();
 			$customer_name = $this->get_customer_name_from_phone( $phone );
-			$templates = get_option( 'wacs_settings_templates', array() );
-			$template = isset( $templates['abandoned_cart'] ) ? $templates['abandoned_cart'] : __( 'Hi {first_name}! You left some items in your cart. Complete your order now and get free shipping: {cart_link}', 'whatsapp-commerce-suite' );
+			$templates = get_option( 'ccs_settings_templates', array() );
+			$template = isset( $templates['abandoned_cart'] ) ? $templates['abandoned_cart'] : __( 'Hi {first_name}! You left some items in your cart. Complete your order now and get free shipping: {cart_link}', 'chat-commerce-suite' );
 
 			$replacements = array(
 				'{first_name}' => $customer_name,
@@ -114,12 +114,12 @@ class WhatsApp_Commerce_Abandoned_Cart {
 			);
 			$message = str_replace( array_keys( $replacements ), array_values( $replacements ), $template );
 
-			$api = new WhatsApp_Commerce_API();
+			$api = new Chat_Commerce_API();
 			$result = $api->send_message( $phone, $message );
 
 			if ( ! is_wp_error( $result ) ) {
 				$wpdb->update(
-					$wpdb->prefix . 'wacs_carts',
+					$wpdb->prefix . 'ccs_carts',
 					array( 'status' => 'sent' ),
 					array( 'id' => $cart->id ),
 					array( '%s' ),
@@ -132,18 +132,18 @@ class WhatsApp_Commerce_Abandoned_Cart {
 	private function get_cart_key() {
 		if ( is_user_logged_in() ) {
 			$user_id = get_current_user_id();
-			$meta_key = get_user_meta( $user_id, '_wacs_cart_key', true );
+			$meta_key = get_user_meta( $user_id, '_ccs_cart_key', true );
 			if ( ! $meta_key ) {
 				$meta_key = md5( uniqid( $user_id, true ) );
-				update_user_meta( $user_id, '_wacs_cart_key', $meta_key );
+				update_user_meta( $user_id, '_ccs_cart_key', $meta_key );
 			}
 			return $meta_key;
 		} else {
 			if ( isset( WC()->session ) ) {
-				$session_key = WC()->session->get( 'wacs_cart_key' );
+				$session_key = WC()->session->get( 'ccs_cart_key' );
 				if ( ! $session_key ) {
 					$session_key = md5( uniqid( '', true ) );
-					WC()->session->set( 'wacs_cart_key', $session_key );
+					WC()->session->set( 'ccs_cart_key', $session_key );
 				}
 				return $session_key;
 			}
@@ -172,6 +172,6 @@ class WhatsApp_Commerce_Abandoned_Cart {
 		if ( ! empty( $users ) ) {
 			return $users[0]->first_name;
 		}
-		return __( 'there', 'whatsapp-commerce-suite' );
+		return __( 'there', 'chat-commerce-suite' );
 	}
 }

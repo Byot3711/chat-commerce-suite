@@ -6,8 +6,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 global $wpdb;
 
 $tables = array(
-	$wpdb->prefix . 'wacs_logs',
-	$wpdb->prefix . 'wacs_carts',
+	$wpdb->prefix . 'ccs_logs',
+	$wpdb->prefix . 'ccs_carts',
 );
 
 foreach ( $tables as $table ) {
@@ -15,12 +15,12 @@ foreach ( $tables as $table ) {
 }
 
 $options = array(
-	'wacs_settings_general',
-	'wacs_settings_abandoned',
-	'wacs_settings_notifications',
-	'wacs_settings_catalog',
-	'wacs_settings_templates',
-	'wacs_version',
+	'ccs_settings_general',
+	'ccs_settings_abandoned',
+	'ccs_settings_notifications',
+	'ccs_settings_catalog',
+	'ccs_settings_templates',
+	'ccs_version',
 );
 
 foreach ( $options as $option ) {

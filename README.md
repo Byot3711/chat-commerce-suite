@@ -1,8 +1,8 @@
-# WhatsApp Commerce Suite
+# Chat Commerce Suite
 
 Turn any WooCommerce store into a WhatsApp sales channel. Adds a product catalog, order button, abandoned cart recovery, and automatic order status notifications — all sent through the official WhatsApp Business Cloud API.
 
-![WhatsApp Commerce Suite - admin and storefront preview](assets/screenshot.png)
+![Chat Commerce Suite - admin and storefront preview](assets/screenshot.png)
 
 ## Features
 
@@ -23,12 +23,12 @@ Turn any WooCommerce store into a WhatsApp sales channel. Adds a product catalog
 
 ## Installation
 
-1. Download or clone this repository into `wp-content/plugins/whatsapp-commerce-suite`.
-2. Activate **WhatsApp Commerce Suite** from the WordPress Plugins screen.
+1. Download or clone this repository into `wp-content/plugins/chat-commerce-suite`.
+2. Activate **Chat Commerce Suite** from the WordPress Plugins screen.
 3. Go to **WooCommerce → WhatsApp Suite** and enter your Phone Number ID, access token, and a verify token of your choice.
 4. In your Meta app, set the webhook Callback URL to:
    ```
-   https://yourdomain.com/wp-json/whatsapp-commerce-suite/v1/webhook
+   https://yourdomain.com/wp-json/chat-commerce-suite/v1/webhook
    ```
    and use the same verify token you configured in step 3.
 

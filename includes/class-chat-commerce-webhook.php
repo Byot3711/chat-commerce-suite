@@ -3,14 +3,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WhatsApp_Commerce_Webhook {
+class Chat_Commerce_Webhook {
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 	}
 
 	public function register_rest_routes() {
-		register_rest_route( 'whatsapp-commerce-suite/v1', '/webhook', array(
+		register_rest_route( 'chat-commerce-suite/v1', '/webhook', array(
 			'methods'             => array( 'GET', 'POST' ),
 			'callback'            => array( $this, 'handle_webhook' ),
 			'permission_callback' => '__return_true',
@@ -23,7 +23,7 @@ class WhatsApp_Commerce_Webhook {
 			$hub_verify_token = $request->get_param( 'hub_verify_token' );
 			$hub_challenge = $request->get_param( 'hub_challenge' );
 
-			$general = get_option( 'wacs_settings_general', array() );
+			$general = get_option( 'ccs_settings_general', array() );
 			$verify_token = isset( $general['verify_token'] ) ? $general['verify_token'] : '';
 
 			if ( 'subscribe' === $hub_mode && $hub_verify_token === $verify_token ) {
@@ -57,7 +57,7 @@ class WhatsApp_Commerce_Webhook {
 	private function handle_incoming_message( $phone, $text ) {
 		global $wpdb;
 		$wpdb->insert(
-			$wpdb->prefix . 'wacs_logs',
+			$wpdb->prefix . 'ccs_logs',
 			array(
 				'phone'     => $phone,
 				'message'   => $text,
@@ -67,7 +67,7 @@ class WhatsApp_Commerce_Webhook {
 			array( '%s', '%s', '%s', '%s' )
 		);
 
-		$api = new WhatsApp_Commerce_API();
+		$api = new Chat_Commerce_API();
 		$response_text = $this->generate_auto_reply( $text, $phone );
 		if ( $response_text ) {
 			$api->send_message( $phone, $response_text );
@@ -80,7 +80,7 @@ class WhatsApp_Commerce_Webhook {
 
 		if ( strpos( $text, 'help' ) !== false || strpos( $text, 'ajutor' ) !== false ) {
 			return sprintf(
-				__( "Welcome to %s!\nCommands:\n- Type 'status' to check your order\n- Type 'products' to see our catalog\n- Type 'contact' to reach support", 'whatsapp-commerce-suite' ),
+				__( "Welcome to %s!\nCommands:\n- Type 'status' to check your order\n- Type 'products' to see our catalog\n- Type 'contact' to reach support", 'chat-commerce-suite' ),
 				$site_name
 			);
 		}
@@ -90,18 +90,18 @@ class WhatsApp_Commerce_Webhook {
 			if ( $order ) {
 				$status = wc_get_order_status_name( $order->get_status() );
 				return sprintf(
-					__( "Your order #%s is currently: %s", 'whatsapp-commerce-suite' ),
+					__( "Your order #%s is currently: %s", 'chat-commerce-suite' ),
 					$order->get_order_number(),
 					$status
 				);
 			}
-			return __( 'No recent order found for this number. Please provide an order number.', 'whatsapp-commerce-suite' );
+			return __( 'No recent order found for this number. Please provide an order number.', 'chat-commerce-suite' );
 		}
 
 		if ( strpos( $text, 'product' ) !== false || strpos( $text, 'catalog' ) !== false ) {
 			$products_link = wc_get_page_permalink( 'shop' );
 			return sprintf(
-				__( "View our products at %s", 'whatsapp-commerce-suite' ),
+				__( "View our products at %s", 'chat-commerce-suite' ),
 				$products_link
 			);
 		}
@@ -109,12 +109,12 @@ class WhatsApp_Commerce_Webhook {
 		if ( strpos( $text, 'contact' ) !== false || strpos( $text, 'support' ) !== false ) {
 			$admin_email = get_option( 'admin_email' );
 			return sprintf(
-				__( "Contact us at %s", 'whatsapp-commerce-suite' ),
+				__( "Contact us at %s", 'chat-commerce-suite' ),
 				$admin_email
 			);
 		}
 
-		return __( "I'm sorry, I didn't understand. Type 'help' for options.", 'whatsapp-commerce-suite' );
+		return __( "I'm sorry, I didn't understand. Type 'help' for options.", 'chat-commerce-suite' );
 	}
 
 	private function get_recent_order_by_phone( $phone ) {
