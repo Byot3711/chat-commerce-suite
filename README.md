@@ -16,10 +16,14 @@ Turn any WooCommerce store into a WhatsApp sales channel. Adds a product catalog
 
 ## Requirements
 
-- WordPress 5.0+
-- WooCommerce 3.0+
+- WordPress 6.0+, tested through 7.1
+- WooCommerce 3.0+, tested through 11.0
 - PHP 7.2+
 - A WhatsApp Business Cloud API app (Phone Number ID + access token) from Meta for Developers
+
+## Translation
+
+All user-facing strings use the `chat-commerce-suite` text domain. The POT catalog is available at `languages/chat-commerce-suite.pot`; placeholder-bearing strings include translator notes for safe localization.
 
 ## Installation
 

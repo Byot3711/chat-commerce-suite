@@ -1,0 +1,79 @@
+# Copyright (C) 2026 Chat Commerce Suite contributors
+# This file is distributed under the same license as the Chat Commerce Suite package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Chat Commerce Suite 1.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/Byot3711/chat-commerce-suite/issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: chat-commerce-suite\n"
+
+#: includes/class-chat-commerce-admin.php
+msgid "Chat Commerce Suite"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "General"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "Message Templates"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "Abandoned Cart"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "Order Notifications"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "Catalog"
+msgstr ""
+
+#: includes/class-chat-commerce-admin.php
+msgid "Logs"
+msgstr ""
+
+#: includes/class-chat-commerce-frontend.php
+msgid "Order via WhatsApp"
+msgstr ""
+
+#: includes/class-chat-commerce-frontend.php
+msgid "No products found."
+msgstr ""
+
+#: includes/class-chat-commerce-webhook.php
+msgid "No recent order found for this number. Please provide an order number."
+msgstr ""
+
+#: includes/class-chat-commerce-webhook.php
+msgid "I'm sorry, I didn't understand. Type 'help' for options."
+msgstr ""
+
+#. Translators: %1$s is the product name and %2$s is the product URL.
+#: includes/class-chat-commerce-frontend.php
+msgid "Hi! I am interested in %1$s (%2$s)"
+msgstr ""
+
+#. Translators: %s is the site name.
+#: includes/class-chat-commerce-webhook.php
+msgid "Welcome to %s!\nCommands:\n- Type 'status' to check your order\n- Type 'products' to see our catalog\n- Type 'contact' to reach support"
+msgstr ""
+
+#. Translators: %1$s is the order number and %2$s is the order status.
+#: includes/class-chat-commerce-webhook.php
+msgid "Your order #%1$s is currently: %2$s"
+msgstr ""
+
+#. Translators: %s is the shop URL.
+#: includes/class-chat-commerce-webhook.php
+msgid "View our products at %s"
+msgstr ""
+
+#. Translators: %s is the support email address.
+#: includes/class-chat-commerce-webhook.php
+msgid "Contact us at %s"
+msgstr ""

@@ -1,9 +1,9 @@
 === Chat Commerce Suite ===
 Contributors: byot
 Tags: whatsapp, woocommerce, chat, order notifications, abandoned cart
-Requires at least: 5.0
-Tested up to: 6.5
-Stable tag: 1.0.0
+Requires at least: 6.0
+Tested up to: 7.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,11 @@ Create a Meta Business app, add the WhatsApp product, and obtain a Phone Number 
 In your Meta app, go to WhatsApp > Configuration, set the Callback URL to `https://yoursite.com/wp-json/chat-commerce-suite/v1/webhook` and the Verify Token to the value you set in the plugin settings.
 
 == Changelog ==
+
+= 1.1.0 =
+* Harden webhook signature verification and settings validation.
+* Update WordPress and WooCommerce compatibility metadata.
+* Improve internationalization and coding-standard compatibility.
 
 = 1.0.0 =
 * Initial release.

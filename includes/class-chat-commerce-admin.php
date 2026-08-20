@@ -1,16 +1,25 @@
 <?php
+/**
+ * Administration settings and log screens.
+ *
+ * @package Chat_Commerce_Suite
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/** Render and manage plugin administration screens. */
 class Chat_Commerce_Admin {
 
+	/** Register administration hooks. */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 	}
 
+	/** Add the plugin settings submenu. */
 	public function add_admin_menu() {
 		add_submenu_page(
 			'woocommerce',
@@ -22,6 +31,7 @@ class Chat_Commerce_Admin {
 		);
 	}
 
+	/** Register settings and sanitization callbacks. */
 	public function register_settings() {
 		register_setting( 'ccs_settings_group_general', 'ccs_settings_general', array( $this, 'sanitize_general' ) );
 		register_setting( 'ccs_settings_group_abandoned', 'ccs_settings_abandoned', array( $this, 'sanitize_abandoned' ) );
@@ -30,6 +40,11 @@ class Chat_Commerce_Admin {
 		register_setting( 'ccs_settings_group_templates', 'ccs_settings_templates', array( $this, 'sanitize_templates' ) );
 	}
 
+	/**
+	 * Enqueue administration assets on the plugin screen.
+	 *
+	 * @param string $hook Current admin page hook.
+	 */
 	public function enqueue_admin_assets( $hook ) {
 		if ( 'woocommerce_page_chat-commerce-suite' !== $hook ) {
 			return;
@@ -38,19 +53,24 @@ class Chat_Commerce_Admin {
 		wp_enqueue_script( 'ccs-admin-js', CCS_PLUGIN_URL . 'assets/js/admin.js', array( 'jquery' ), CCS_VERSION, true );
 	}
 
+	/** Render the settings page and active tab. */
 	public function render_settings_page() {
-		$active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+		$active_tab   = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+		$allowed_tabs = array( 'general', 'templates', 'abandoned', 'notifications', 'catalog', 'logs' );
+		if ( ! in_array( $active_tab, $allowed_tabs, true ) ) {
+			$active_tab = 'general';
+		}
 		?>
 		<div class="wrap ccs-wrap">
 			<h1><?php esc_html_e( 'Chat Commerce Suite', 'chat-commerce-suite' ); ?></h1>
 
 			<nav class="nav-tab-wrapper">
-				<a href="?page=chat-commerce-suite&tab=general" class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'General', 'chat-commerce-suite' ); ?></a>
-				<a href="?page=chat-commerce-suite&tab=templates" class="nav-tab <?php echo $active_tab === 'templates' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Message Templates', 'chat-commerce-suite' ); ?></a>
-				<a href="?page=chat-commerce-suite&tab=abandoned" class="nav-tab <?php echo $active_tab === 'abandoned' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Abandoned Cart', 'chat-commerce-suite' ); ?></a>
-				<a href="?page=chat-commerce-suite&tab=notifications" class="nav-tab <?php echo $active_tab === 'notifications' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Order Notifications', 'chat-commerce-suite' ); ?></a>
-				<a href="?page=chat-commerce-suite&tab=catalog" class="nav-tab <?php echo $active_tab === 'catalog' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Catalog', 'chat-commerce-suite' ); ?></a>
-				<a href="?page=chat-commerce-suite&tab=logs" class="nav-tab <?php echo $active_tab === 'logs' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Logs', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=general" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'General', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=templates" class="nav-tab <?php echo 'templates' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Message Templates', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=abandoned" class="nav-tab <?php echo 'abandoned' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Abandoned Cart', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=notifications" class="nav-tab <?php echo 'notifications' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Order Notifications', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=catalog" class="nav-tab <?php echo 'catalog' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Catalog', 'chat-commerce-suite' ); ?></a>
+				<a href="?page=chat-commerce-suite&tab=logs" class="nav-tab <?php echo 'logs' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Logs', 'chat-commerce-suite' ); ?></a>
 			</nav>
 
 			<div class="ccs-tab-content">
@@ -81,13 +101,15 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render general settings. */
 	private function render_general_tab() {
-		$general = get_option( 'ccs_settings_general', array() );
-		$phone_number_id = isset( $general['phone_number_id'] ) ? $general['phone_number_id'] : '';
-		$access_token = isset( $general['access_token'] ) ? $general['access_token'] : '';
-		$verify_token = isset( $general['verify_token'] ) ? $general['verify_token'] : '';
-		$api_version = isset( $general['api_version'] ) ? $general['api_version'] : 'v17.0';
-		$whatsapp_number = isset( $general['whatsapp_number'] ) ? $general['whatsapp_number'] : '';
+		$general          = get_option( 'ccs_settings_general', array() );
+		$phone_number_id  = isset( $general['phone_number_id'] ) ? $general['phone_number_id'] : '';
+		$access_token     = isset( $general['access_token'] ) ? $general['access_token'] : '';
+		$verify_token     = isset( $general['verify_token'] ) ? $general['verify_token'] : '';
+		$app_secret       = isset( $general['app_secret'] ) ? $general['app_secret'] : '';
+		$api_version      = isset( $general['api_version'] ) ? $general['api_version'] : 'v17.0';
+		$whatsapp_number  = isset( $general['whatsapp_number'] ) ? $general['whatsapp_number'] : '';
 		$floating_enabled = isset( $general['floating_enabled'] ) ? $general['floating_enabled'] : 'no';
 		?>
 		<form method="post" action="options.php">
@@ -106,6 +128,13 @@ class Chat_Commerce_Admin {
 					<td>
 						<input type="text" id="ccs_verify_token" name="ccs_settings_general[verify_token]" value="<?php echo esc_attr( $verify_token ); ?>" class="regular-text" required />
 						<p class="description"><?php esc_html_e( 'Used to verify the webhook URL in Meta Business app.', 'chat-commerce-suite' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ccs_app_secret"><?php esc_html_e( 'App Secret', 'chat-commerce-suite' ); ?></label></th>
+					<td>
+						<input type="password" id="ccs_app_secret" name="ccs_settings_general[app_secret]" value="<?php echo esc_attr( $app_secret ); ?>" class="regular-text" autocomplete="new-password" />
+						<p class="description"><?php esc_html_e( 'Used to verify signed webhook requests from Meta.', 'chat-commerce-suite' ); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -139,21 +168,25 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render message template settings. */
 	private function render_templates_tab() {
 		$templates = get_option( 'ccs_settings_templates', array() );
-		$default = array(
-			'abandoned_cart' => __( 'Hi {first_name}! You left some items in your cart. Complete your order now and get free shipping: {cart_link}', 'chat-commerce-suite' ),
-			'order_on_hold'  => __( 'Hi {first_name}, your order #{order_number} is on hold. We will contact you shortly.', 'chat-commerce-suite' ),
+		$default   = array(
+			'abandoned_cart'   => __( 'Hi {first_name}! You left some items in your cart. Complete your order now and get free shipping: {cart_link}', 'chat-commerce-suite' ),
+			'order_on_hold'    => __( 'Hi {first_name}, your order #{order_number} is on hold. We will contact you shortly.', 'chat-commerce-suite' ),
 			'order_processing' => __( 'Hi {first_name}, your order #{order_number} is now processing. Thank you!', 'chat-commerce-suite' ),
-			'order_completed' => __( 'Hi {first_name}, your order #{order_number} has been completed. We hope you enjoy your purchase!', 'chat-commerce-suite' ),
-			'order_cancelled' => __( 'Hi {first_name}, your order #{order_number} has been cancelled. If you have any questions, please contact us.', 'chat-commerce-suite' ),
+			'order_completed'  => __( 'Hi {first_name}, your order #{order_number} has been completed. We hope you enjoy your purchase!', 'chat-commerce-suite' ),
+			'order_cancelled'  => __( 'Hi {first_name}, your order #{order_number} has been cancelled. If you have any questions, please contact us.', 'chat-commerce-suite' ),
 		);
 		$templates = wp_parse_args( $templates, $default );
 		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'ccs_settings_group_templates' ); ?>
 			<table class="form-table">
-				<?php foreach ( $templates as $key => $value ) : $label = str_replace( '_', ' ', $key ); ?>
+				<?php
+				foreach ( $templates as $key => $value ) :
+					$label = str_replace( '_', ' ', $key );
+					?>
 					<tr>
 						<th scope="row"><label for="ccs_template_<?php echo esc_attr( $key ); ?>"><?php echo esc_html( ucwords( $label ) ); ?></label></th>
 						<td>
@@ -168,10 +201,11 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render abandoned-cart settings. */
 	private function render_abandoned_tab() {
 		$abandoned = get_option( 'ccs_settings_abandoned', array() );
-		$enabled = isset( $abandoned['enabled'] ) ? $abandoned['enabled'] : 'no';
-		$delay = isset( $abandoned['delay_minutes'] ) ? $abandoned['delay_minutes'] : 30;
+		$enabled   = isset( $abandoned['enabled'] ) ? $abandoned['enabled'] : 'no';
+		$delay     = isset( $abandoned['delay_minutes'] ) ? $abandoned['delay_minutes'] : 30;
 		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'ccs_settings_group_abandoned' ); ?>
@@ -193,9 +227,10 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render order notification settings. */
 	private function render_notifications_tab() {
 		$notifications = get_option( 'ccs_settings_notifications', array() );
-		$statuses = wc_get_order_statuses();
+		$statuses      = wc_get_order_statuses();
 		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'ccs_settings_group_notifications' ); ?>
@@ -204,9 +239,12 @@ class Chat_Commerce_Admin {
 					<th scope="row"><?php esc_html_e( 'Send notifications for these statuses', 'chat-commerce-suite' ); ?></th>
 					<td>
 						<div class="ccs-checkbox-list">
-							<?php foreach ( $statuses as $status => $label ) : $clean_status = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status; ?>
+							<?php
+							foreach ( $statuses as $status => $label ) :
+								$clean_status = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status;
+								?>
 								<label>
-									<input type="checkbox" name="ccs_settings_notifications[statuses][]" value="<?php echo esc_attr( $clean_status ); ?>" <?php checked( isset( $notifications['statuses'] ) && in_array( $clean_status, $notifications['statuses'] ) ); ?> />
+									<input type="checkbox" name="ccs_settings_notifications[statuses][]" value="<?php echo esc_attr( $clean_status ); ?>" <?php checked( isset( $notifications['statuses'] ) && in_array( $clean_status, $notifications['statuses'], true ) ); ?> />
 									<?php echo esc_html( $label ); ?>
 								</label>
 							<?php endforeach; ?>
@@ -219,10 +257,11 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render catalog settings. */
 	private function render_catalog_tab() {
-		$catalog = get_option( 'ccs_settings_catalog', array() );
+		$catalog     = get_option( 'ccs_settings_catalog', array() );
 		$button_text = isset( $catalog['button_text'] ) ? $catalog['button_text'] : __( 'Order via WhatsApp', 'chat-commerce-suite' );
-		$columns = isset( $catalog['columns'] ) ? $catalog['columns'] : 3;
+		$columns     = isset( $catalog['columns'] ) ? $catalog['columns'] : 3;
 		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'ccs_settings_group_catalog' ); ?>
@@ -247,6 +286,7 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/** Render message logs. */
 	private function render_logs_tab() {
 		global $wpdb;
 		$logs = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ccs_logs ORDER BY id DESC LIMIT 100" );
@@ -282,38 +322,72 @@ class Chat_Commerce_Admin {
 		<?php
 	}
 
+	/**
+	 * Sanitize general settings.
+	 *
+	 * @param array $input Raw settings.
+	 */
 	public function sanitize_general( $input ) {
-		$sanitized = array();
-		$sanitized['phone_number_id'] = sanitize_text_field( $input['phone_number_id'] );
-		$sanitized['access_token'] = sanitize_text_field( $input['access_token'] );
-		$sanitized['verify_token'] = sanitize_text_field( $input['verify_token'] );
-		$sanitized['api_version'] = sanitize_text_field( $input['api_version'] );
-		$sanitized['whatsapp_number'] = sanitize_text_field( $input['whatsapp_number'] );
+		$input                         = is_array( $input ) ? $input : array();
+		$sanitized                     = array();
+		$sanitized['phone_number_id']  = isset( $input['phone_number_id'] ) ? sanitize_text_field( $input['phone_number_id'] ) : '';
+		$sanitized['access_token']     = isset( $input['access_token'] ) ? sanitize_text_field( $input['access_token'] ) : '';
+		$sanitized['verify_token']     = isset( $input['verify_token'] ) ? sanitize_text_field( $input['verify_token'] ) : '';
+		$sanitized['app_secret']       = isset( $input['app_secret'] ) ? sanitize_text_field( $input['app_secret'] ) : '';
+		$api_version                   = isset( $input['api_version'] ) ? sanitize_text_field( $input['api_version'] ) : 'v17.0';
+		$sanitized['api_version']      = preg_match( '/^v[0-9]+\.[0-9]+$/', $api_version ) ? $api_version : 'v17.0';
+		$sanitized['whatsapp_number']  = isset( $input['whatsapp_number'] ) ? sanitize_text_field( $input['whatsapp_number'] ) : '';
 		$sanitized['floating_enabled'] = isset( $input['floating_enabled'] ) && 'yes' === $input['floating_enabled'] ? 'yes' : 'no';
 		return $sanitized;
 	}
 
+	/**
+	 * Sanitize abandoned-cart settings.
+	 *
+	 * @param array $input Raw settings.
+	 */
 	public function sanitize_abandoned( $input ) {
-		$sanitized = array();
-		$sanitized['enabled'] = isset( $input['enabled'] ) && 'yes' === $input['enabled'] ? 'yes' : 'no';
-		$sanitized['delay_minutes'] = absint( $input['delay_minutes'] );
+		$input                      = is_array( $input ) ? $input : array();
+		$sanitized                  = array();
+		$sanitized['enabled']       = isset( $input['enabled'] ) && 'yes' === $input['enabled'] ? 'yes' : 'no';
+		$sanitized['delay_minutes'] = isset( $input['delay_minutes'] ) ? max( 5, absint( $input['delay_minutes'] ) ) : 30;
 		return $sanitized;
 	}
 
+	/**
+	 * Sanitize notification settings.
+	 *
+	 * @param array $input Raw settings.
+	 */
 	public function sanitize_notifications( $input ) {
-		$sanitized = array();
-		$sanitized['statuses'] = isset( $input['statuses'] ) ? array_map( 'sanitize_key', $input['statuses'] ) : array();
+		$input                 = is_array( $input ) ? $input : array();
+		$sanitized             = array();
+		$statuses              = isset( $input['statuses'] ) && is_array( $input['statuses'] ) ? $input['statuses'] : array();
+		$sanitized['statuses'] = array_map( 'sanitize_key', $statuses );
 		return $sanitized;
 	}
 
+	/**
+	 * Sanitize catalog settings.
+	 *
+	 * @param array $input Raw settings.
+	 */
 	public function sanitize_catalog( $input ) {
-		$sanitized = array();
-		$sanitized['button_text'] = sanitize_text_field( $input['button_text'] );
-		$sanitized['columns'] = absint( $input['columns'] );
+		$input                    = is_array( $input ) ? $input : array();
+		$sanitized                = array();
+		$sanitized['button_text'] = isset( $input['button_text'] ) ? sanitize_text_field( $input['button_text'] ) : '';
+		$columns                  = isset( $input['columns'] ) ? absint( $input['columns'] ) : 3;
+		$sanitized['columns']     = in_array( $columns, array( 2, 3, 4 ), true ) ? $columns : 3;
 		return $sanitized;
 	}
 
+	/**
+	 * Sanitize message templates.
+	 *
+	 * @param array $input Raw templates.
+	 */
 	public function sanitize_templates( $input ) {
+		$input     = is_array( $input ) ? $input : array();
 		$sanitized = array();
 		foreach ( $input as $key => $value ) {
 			$sanitized[ sanitize_key( $key ) ] = sanitize_textarea_field( $value );
