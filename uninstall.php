@@ -1,4 +1,10 @@
 <?php
+/**
+ * Remove plugin data during uninstall.
+ *
+ * @package Chat_Commerce_Suite
+ */
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
@@ -11,6 +17,7 @@ $tables = array(
 );
 
 foreach ( $tables as $table ) {
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table names are generated from the site prefix and fixed plugin suffixes.
 	$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
 }
 
