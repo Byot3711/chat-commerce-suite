@@ -40,6 +40,10 @@ class Chat_Commerce_Admin {
 
 	public function render_settings_page() {
 		$active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+		$allowed_tabs = array( 'general', 'templates', 'abandoned', 'notifications', 'catalog', 'logs' );
+		if ( ! in_array( $active_tab, $allowed_tabs, true ) ) {
+			$active_tab = 'general';
+		}
 		?>
 		<div class="wrap ccs-wrap">
 			<h1><?php esc_html_e( 'Chat Commerce Suite', 'chat-commerce-suite' ); ?></h1>
@@ -86,6 +90,7 @@ class Chat_Commerce_Admin {
 		$phone_number_id = isset( $general['phone_number_id'] ) ? $general['phone_number_id'] : '';
 		$access_token = isset( $general['access_token'] ) ? $general['access_token'] : '';
 		$verify_token = isset( $general['verify_token'] ) ? $general['verify_token'] : '';
+		$app_secret = isset( $general['app_secret'] ) ? $general['app_secret'] : '';
 		$api_version = isset( $general['api_version'] ) ? $general['api_version'] : 'v17.0';
 		$whatsapp_number = isset( $general['whatsapp_number'] ) ? $general['whatsapp_number'] : '';
 		$floating_enabled = isset( $general['floating_enabled'] ) ? $general['floating_enabled'] : 'no';
@@ -106,6 +111,13 @@ class Chat_Commerce_Admin {
 					<td>
 						<input type="text" id="ccs_verify_token" name="ccs_settings_general[verify_token]" value="<?php echo esc_attr( $verify_token ); ?>" class="regular-text" required />
 						<p class="description"><?php esc_html_e( 'Used to verify the webhook URL in Meta Business app.', 'chat-commerce-suite' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ccs_app_secret"><?php esc_html_e( 'App Secret', 'chat-commerce-suite' ); ?></label></th>
+					<td>
+						<input type="password" id="ccs_app_secret" name="ccs_settings_general[app_secret]" value="<?php echo esc_attr( $app_secret ); ?>" class="regular-text" autocomplete="new-password" />
+						<p class="description"><?php esc_html_e( 'Used to verify signed webhook requests from Meta.', 'chat-commerce-suite' ); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -283,37 +295,46 @@ class Chat_Commerce_Admin {
 	}
 
 	public function sanitize_general( $input ) {
+		$input = is_array( $input ) ? $input : array();
 		$sanitized = array();
-		$sanitized['phone_number_id'] = sanitize_text_field( $input['phone_number_id'] );
-		$sanitized['access_token'] = sanitize_text_field( $input['access_token'] );
-		$sanitized['verify_token'] = sanitize_text_field( $input['verify_token'] );
-		$sanitized['api_version'] = sanitize_text_field( $input['api_version'] );
-		$sanitized['whatsapp_number'] = sanitize_text_field( $input['whatsapp_number'] );
+		$sanitized['phone_number_id'] = isset( $input['phone_number_id'] ) ? sanitize_text_field( $input['phone_number_id'] ) : '';
+		$sanitized['access_token'] = isset( $input['access_token'] ) ? sanitize_text_field( $input['access_token'] ) : '';
+		$sanitized['verify_token'] = isset( $input['verify_token'] ) ? sanitize_text_field( $input['verify_token'] ) : '';
+		$sanitized['app_secret'] = isset( $input['app_secret'] ) ? sanitize_text_field( $input['app_secret'] ) : '';
+		$api_version = isset( $input['api_version'] ) ? sanitize_text_field( $input['api_version'] ) : 'v17.0';
+		$sanitized['api_version'] = preg_match( '/^v[0-9]+\.[0-9]+$/', $api_version ) ? $api_version : 'v17.0';
+		$sanitized['whatsapp_number'] = isset( $input['whatsapp_number'] ) ? sanitize_text_field( $input['whatsapp_number'] ) : '';
 		$sanitized['floating_enabled'] = isset( $input['floating_enabled'] ) && 'yes' === $input['floating_enabled'] ? 'yes' : 'no';
 		return $sanitized;
 	}
 
 	public function sanitize_abandoned( $input ) {
+		$input = is_array( $input ) ? $input : array();
 		$sanitized = array();
 		$sanitized['enabled'] = isset( $input['enabled'] ) && 'yes' === $input['enabled'] ? 'yes' : 'no';
-		$sanitized['delay_minutes'] = absint( $input['delay_minutes'] );
+		$sanitized['delay_minutes'] = isset( $input['delay_minutes'] ) ? max( 5, absint( $input['delay_minutes'] ) ) : 30;
 		return $sanitized;
 	}
 
 	public function sanitize_notifications( $input ) {
+		$input = is_array( $input ) ? $input : array();
 		$sanitized = array();
-		$sanitized['statuses'] = isset( $input['statuses'] ) ? array_map( 'sanitize_key', $input['statuses'] ) : array();
+		$statuses = isset( $input['statuses'] ) && is_array( $input['statuses'] ) ? $input['statuses'] : array();
+		$sanitized['statuses'] = array_map( 'sanitize_key', $statuses );
 		return $sanitized;
 	}
 
 	public function sanitize_catalog( $input ) {
+		$input = is_array( $input ) ? $input : array();
 		$sanitized = array();
-		$sanitized['button_text'] = sanitize_text_field( $input['button_text'] );
-		$sanitized['columns'] = absint( $input['columns'] );
+		$sanitized['button_text'] = isset( $input['button_text'] ) ? sanitize_text_field( $input['button_text'] ) : '';
+		$columns = isset( $input['columns'] ) ? absint( $input['columns'] ) : 3;
+		$sanitized['columns'] = in_array( $columns, array( 2, 3, 4 ), true ) ? $columns : 3;
 		return $sanitized;
 	}
 
 	public function sanitize_templates( $input ) {
+		$input = is_array( $input ) ? $input : array();
 		$sanitized = array();
 		foreach ( $input as $key => $value ) {
 			$sanitized[ sanitize_key( $key ) ] = sanitize_textarea_field( $value );
