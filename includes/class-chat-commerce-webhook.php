@@ -26,10 +26,17 @@ class Chat_Commerce_Webhook {
 			$general = get_option( 'ccs_settings_general', array() );
 			$verify_token = isset( $general['verify_token'] ) ? $general['verify_token'] : '';
 
-			if ( 'subscribe' === $hub_mode && $hub_verify_token === $verify_token ) {
+			if ( 'subscribe' === $hub_mode && ! empty( $verify_token ) && hash_equals( $verify_token, (string) $hub_verify_token ) ) {
 				return new WP_REST_Response( $hub_challenge, 200 );
 			}
 			return new WP_REST_Response( 'Verification failed', 403 );
+		}
+
+		$general = get_option( 'ccs_settings_general', array() );
+		$app_secret = isset( $general['app_secret'] ) ? $general['app_secret'] : '';
+		$signature = $request->get_header( 'x-hub-signature-256' );
+		if ( empty( $app_secret ) || ! $this->is_valid_signature( $request->get_body(), $signature, $app_secret ) ) {
+			return new WP_REST_Response( 'Invalid signature', 403 );
 		}
 
 		$body = $request->get_body();
@@ -52,6 +59,15 @@ class Chat_Commerce_Webhook {
 		}
 
 		return new WP_REST_Response( 'OK', 200 );
+	}
+
+	private function is_valid_signature( $body, $signature, $app_secret ) {
+		if ( 0 !== strpos( $signature, 'sha256=' ) ) {
+			return false;
+		}
+
+		$expected = 'sha256=' . hash_hmac( 'sha256', $body, $app_secret );
+		return hash_equals( $expected, $signature );
 	}
 
 	private function handle_incoming_message( $phone, $text ) {
